@@ -1,3 +1,26 @@
+$button-border: 1px solid #EEEEEE;
+$button-active: #EEEEEE;
 * {
 	background-color: red;
+}
+
+
+.btn {
+	cursor: pointer;
+}
+
+.btn-default {
+	background-color: white;
+	border: $button-border;
+}
+
+.btn-default:active {
+	background-color: $button-active;	
+}
+
+
+#snapshot {
+	display: block;
+	width: 250px;
+	height: 75px;
 }
