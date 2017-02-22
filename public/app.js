@@ -7,6 +7,8 @@ $(document).ready(function() {
 	}
 
 	navigator.mediaDevices.getUserMedia(options).then(handleSuccess).catch(handleError);
+	
+	setEventListeners();
 });
 
 function handleSuccess(stream) {
@@ -17,4 +19,15 @@ function handleSuccess(stream) {
 
 function handleError(error) {
 	console.log('navigator.getUserMedia error: ', error);
+}
+
+function takeSnapshot() {
+	console.log("Snap!");
+}
+
+function setEventListeners() {
+	// Take Snapshots
+	$("#snapshot").on("click", function(e){
+		takeSnapshot();
+	});
 }
