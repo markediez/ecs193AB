@@ -1,2 +1,5 @@
 # sass output
 .sass-*
+
+# data output
+public/uploads/*.png
