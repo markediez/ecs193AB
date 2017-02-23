@@ -41,8 +41,20 @@ function takeSnapshot() {
 	if (window.stream) {
 		context.canvas.height = v.height();
 		context.canvas.width = v.width();
+		var data = canvas.toDataURL('image/jpeg')
 		context.drawImage(video, 0, 0, v.width(), v.height());
-		document.querySelector('img').src = canvas.toDataURL('image/webp');
+		
+		// UPLOAD
+		$.post({
+			url: "/remove",
+			imgBase64: data,
+			success: function(data, result, xhr) {
+				console.log("HOORAH");
+			},
+			error: function(data, result, xhr) {
+				console.log("ERRROR");
+			}
+		});
 	}
 }
 

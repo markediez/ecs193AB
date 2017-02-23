@@ -12,3 +12,7 @@ end
 get '/app.js' do 
 	js :app
 end
+
+post '/remove' do 
+	puts "Hello World"
+end
