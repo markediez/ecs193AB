@@ -1,6 +1,8 @@
-$(document).ready(function() {
-	console.log("Hello World");
+var video, canvas;
 
+$(document).ready(function() {
+	video = document.querySelector('video');
+	canvas = document.querySelector('canvas');
 	var options = {
 		video: true,
 		audio: true
@@ -12,7 +14,6 @@ $(document).ready(function() {
 });
 
 function handleSuccess(stream) {
-	var video = document.querySelector('video');
 	window.stream = stream;
 	video.src = window.URL.createObjectURL(stream);
 }
@@ -22,7 +23,11 @@ function handleError(error) {
 }
 
 function takeSnapshot() {
-	console.log("Snap!");
+	var context = canvas.getContext('2d');
+	if (window.stream) {
+		context.drawImage(video, 0, 0);
+		document.querySelector('img').src = canvas.toDataURL('image/webp');
+	}
 }
 
 function setEventListeners() {
