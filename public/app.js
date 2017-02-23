@@ -39,12 +39,13 @@ function takeSnapshot() {
 		context.canvas.width = v.width();
 		context.drawImage(video, 0, 0, v.width(), v.height());
 		var data = $("canvas")[0].toDataURL();
-		
+		var fn = "IMG_" + Date.now() + ".png";
 		// UPLOAD
 		$.post({
 			url: "/remove",
 			data: {
-				img: data
+				img: data,
+				filename: fn
 			},
 			success: function(data, result, xhr) {
 				console.log("HOORAH");
