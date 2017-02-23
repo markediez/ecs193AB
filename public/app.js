@@ -1,4 +1,5 @@
 var video, canvas, width, height;
+var meeting = false;
 
 $(document).ready(function() {
 	width = $("video").width();
@@ -57,9 +58,20 @@ function takeSnapshot() {
 	}
 }
 
+function beginSnapshot() {
+	if (meeting) {
+		setTimeout(function() {
+			takeSnapshot();
+			beginSnapshot();
+		}, 1000);
+	}
+}
+
 function setEventListeners() {
 	// Take Snapshots
 	$("#snapshot").on("click", function(e){
-		takeSnapshot();
+		// takeSnapshot();
+		meeting = true;
+		beginSnapshot();
 	});
 }
