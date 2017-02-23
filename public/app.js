@@ -74,4 +74,9 @@ function setEventListeners() {
 		meeting = true;
 		beginSnapshot();
 	});
+	
+	// Stop Meeting
+	$("#stop-meeting").on("click", function(e) {
+		meeting = false;		
+	});
 }
