@@ -13,10 +13,6 @@ $(document).ready(function() {
 		audio: true
 	}
 
-//	video.setAttribute('width', width);
-//	video.setAttribute('height', height);
-//	canvas.setAttribute('width', width);
-//	canvas.setAttribute('height', height);
 	canvas.width = width;
 	canvas.height = height;
 
@@ -41,13 +37,15 @@ function takeSnapshot() {
 	if (window.stream) {
 		context.canvas.height = v.height();
 		context.canvas.width = v.width();
-		var data = canvas.toDataURL('image/jpeg')
 		context.drawImage(video, 0, 0, v.width(), v.height());
+		var data = $("canvas")[0].toDataURL();
 		
 		// UPLOAD
 		$.post({
 			url: "/remove",
-			imgBase64: data,
+			data: {
+				img: data
+			},
 			success: function(data, result, xhr) {
 				console.log("HOORAH");
 			},
