@@ -1,5 +1,6 @@
 var video, canvas, width, height;
 var meeting = false;
+var currImg = undefined;
 
 $(document).ready(function() {
 	width = $("video").width();
@@ -50,6 +51,10 @@ function takeSnapshot() {
 			},
 			success: function(data, result, xhr) {
 				console.log("HOORAH");
+				if (currImg == undefined || currImg != data.img) {
+					currImg = data.img
+					$("#server-image").attr("src", currImg);
+				}
 			},
 			error: function(data, result, xhr) {
 				console.log("ERRROR");
@@ -70,13 +75,13 @@ function beginSnapshot() {
 function setEventListeners() {
 	// Take Snapshots
 	$("#snapshot").on("click", function(e){
-		// takeSnapshot();
+		takeSnapshot();
 		meeting = true;
-		beginSnapshot();
+		// beginSnapshot();
 	});
-	
+
 	// Stop Meeting
 	$("#stop-meeting").on("click", function(e) {
-		meeting = false;		
+		meeting = false;
 	});
 }
