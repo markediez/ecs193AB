@@ -3,19 +3,22 @@ require 'data_uri'
 require 'json'
 configure { set :server, :puma }
 
+# Open views/index.erb
 get '/' do
 	erb :index
 end
 
+# Open views/stylesheet.scss
 get '/stylesheet.css' do
 	scss :stylesheet
 end
 
+# Open public/app.js
 get '/app.js' do
 	js :app
 end
 
-# http://azemoh.com/2016/05/17/sinatra-managing-file-uploads/
+# Route for our video
 post '/remove' do
 	data = params[:img]
 	filename = params[:filename]
