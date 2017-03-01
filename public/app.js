@@ -1,6 +1,7 @@
 var video, canvas, width, height;
 var meeting = false;
 var currImg = undefined;
+var interval = 1000;
 
 $(document).ready(function() {
 	width = $("video").width();
@@ -68,7 +69,7 @@ function beginSnapshot() {
 		setTimeout(function() {
 			takeSnapshot();
 			beginSnapshot();
-		}, 250);
+		}, interval);
 	}
 }
 
