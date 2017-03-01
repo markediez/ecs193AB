@@ -68,16 +68,16 @@ function beginSnapshot() {
 		setTimeout(function() {
 			takeSnapshot();
 			beginSnapshot();
-		}, 1000);
+		}, 250);
 	}
 }
 
 function setEventListeners() {
 	// Take Snapshots
 	$("#snapshot").on("click", function(e){
-		takeSnapshot();
+		// takeSnapshot();
 		meeting = true;
-		// beginSnapshot();
+		beginSnapshot();
 	});
 
 	// Stop Meeting

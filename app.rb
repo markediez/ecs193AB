@@ -26,8 +26,10 @@ post '/remove' do
 	uri = URI::Data.new(data)
 	File.write("public/uploads/#{filename}", uri.data)
 
-	# Encode repaired image
+	# Run C++ or something to repair
 	path = "public/uploads/test.png"
+
+	# Encode repaired image
 	returnData = 'data:image/png;base64,'
 	File.open(path, 'rb'){ |file| returnData += Base64.encode64(file.read) }
 
