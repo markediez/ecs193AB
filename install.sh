@@ -19,3 +19,4 @@ sudo gem install puma
 echo "Installing other gems..."
 sudo gem install data_uri
 sudo gem install json
+sudo gem install sass
