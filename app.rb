@@ -1,5 +1,5 @@
 require 'sinatra'  # Managing routes
-require 'data_uri'
+require 'data_uri' # Saving photos
 require 'json'
 configure { set :server, :puma }
 configure { set :port, 80 }
@@ -23,6 +23,12 @@ end
 post '/remove' do
 	data = params[:img]
 	filename = params[:filename]
+
+	# Create public/uploads folder if it doesn't exist
+	dirname = "public/uploads"
+	unless File.directory?(dirname)
+  		system("mkdir #{dirname}")
+	end
 
 	uri = URI::Data.new(data)
 	File.write("public/uploads/#{filename}", uri.data)
