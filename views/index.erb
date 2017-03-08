@@ -6,16 +6,35 @@
 	<link rel='stylesheet' href="/stylesheet.css">
 </head>
 <body>
-	<video autoplay></video>
-	<canvas id="meeting_canvas"></canvas>
-	<button id="meeting" class="btn-default">Start Meeting</button>
-	<button id="snapshot" class="btn-default">Take Snapshot</button>
-	<button id="stop-meeting" class="btn-default">Stop</button>
+
+<div id="container">
+	<div id="top-left-quadrant" class="quadrant">
+		<video autoplay></video>
+	</div>
+
+	<div id="top-right-quadrant" class="quadrant">
+		<canvas id="meeting_canvas"></canvas>
+	</div>
+
+	<div id="bottom-left-quadrant" class="quadrant">
+		<img id="sent_image"></img>
+	</div>
+
+	<div id="bottom-right-quadrant" class="quadrant">
+		<button id="meeting" class="btn-default">Start Meeting</button>
+		<button id="snapshot" class="btn-default">Take Snapshot</button>
+		<button id="stop-meeting" class="btn-default">Stop</button>
+	</div>
+</div>
+
+<!-- Real App -->
+<!--
+	
 
 	<hl>
 
 	<img id="server-image"></img>
-
+-->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<script type="text/javascript" src="app.js"></script>
 </body>

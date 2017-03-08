@@ -34,34 +34,28 @@ function handleError(error) {
 }
 
 function takeSnapshot() {
-	var v = $("video");
-	var context = canvas.getContext('2d');
-
-	console.log(v.width() + " " + v.height());
 	if (window.stream) {
-		context.canvas.height = v.height();
-		context.canvas.width = v.width();
-		context.drawImage(video, 0, 0, v.width(), v.height());
-		var data = $("canvas")[0].toDataURL();
+		var data = canvas.toDataURL();
 		var fn = "IMG_" + Date.now() + ".png";
+		$("#sent_image").attr("src", data);
 		// UPLOAD
-		$.post({
-			url: "/remove",
-			data: {
-				img: data,
-				filename: fn
-			},
-			success: function(data, result, xhr) {
-				console.log("HOORAH");
-				if (currImg == undefined || currImg != data.img) {
-					currImg = data.img
-					$("#server-image").attr("src", currImg);
-				}
-			},
-			error: function(data, result, xhr) {
-				console.log("ERRROR");
-			}
-		});
+		// $.post({
+		// 	url: "/remove",
+		// 	data: {
+		// 		img: data,
+		// 		filename: fn
+		// 	},
+		// 	success: function(data, result, xhr) {
+		// 		console.log("HOORAH");
+		// 		if (currImg == undefined || currImg != data.img) {
+		// 			currImg = data.img
+		// 			$("#server-image").attr("src", currImg);
+		// 		}
+		// 	},
+		// 	error: function(data, result, xhr) {
+		// 		console.log("ERRROR");
+		// 	}
+		// });
 	}
 }
 
@@ -70,7 +64,7 @@ function beginSnapshot() {
 		setTimeout(function() {
 			takeSnapshot();
 			beginSnapshot();
-		}, interval);
+		}, 1000);
 	}
 }
 
@@ -84,7 +78,7 @@ function setEventListeners() {
 	$("#snapshot").on("click", function(e){
 		send = true;
 		// takeSnapshot();
-		// beginSnapshot();
+		beginSnapshot();
 	});
 
 	// Stop Meeting
@@ -100,6 +94,8 @@ function streamVideo() {
 
 	console.log(v.width() + " " + v.height());
 	if (window.stream) {
+		canvas.width = v.width();
+		canvas.height = v.height();
 		context.canvas.height = v.height();
 		context.canvas.width = v.width();
 		context.drawImage(video, 0, 0, v.width(), v.height());
