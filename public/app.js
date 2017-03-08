@@ -1,4 +1,4 @@
-var video, canvas, width, height;
+var video, canvas, width, height, sentCanvas;
 var meeting = false;
 var send = false;
 var currImg = undefined;
@@ -8,13 +8,13 @@ $(document).ready(function() {
 	width = $("video").width();
 	height = $("video").height();
 	video = document.querySelector('video');
-	canvas = document.querySelector('canvas');
+	canvas = document.querySelector("#meeting_canvas");
+	sentCanvas = document.querySelector("#sent_canvas");
 	var options = {
 		video: {
 			width: 1200,
 			height: 1200
-		},
-		audio: true
+		}
 	}
 
 	canvas.width = width;
