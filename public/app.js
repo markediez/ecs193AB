@@ -39,23 +39,23 @@ function takeSnapshot() {
 		var fn = "IMG_" + Date.now() + ".png";
 		$("#sent_image").attr("src", data);
 		// UPLOAD
-		// $.post({
-		// 	url: "/remove",
-		// 	data: {
-		// 		img: data,
-		// 		filename: fn
-		// 	},
-		// 	success: function(data, result, xhr) {
-		// 		console.log("HOORAH");
-		// 		if (currImg == undefined || currImg != data.img) {
-		// 			currImg = data.img
-		// 			$("#server-image").attr("src", currImg);
-		// 		}
-		// 	},
-		// 	error: function(data, result, xhr) {
-		// 		console.log("ERRROR");
-		// 	}
-		// });
+		$.post({
+			url: "/remove",
+			data: {
+				img: data,
+				filename: fn
+			},
+			success: function(data, result, xhr) {
+				console.log("HOORAH");
+				if (currImg == undefined || currImg != data.img) {
+					currImg = data.img
+					$("#server-image").attr("src", currImg);
+				}
+			},
+			error: function(data, result, xhr) {
+				console.log("ERRROR");
+			}
+		});
 	}
 }
 
