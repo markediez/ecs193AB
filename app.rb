@@ -2,7 +2,7 @@ require 'sinatra'  # Managing routes
 require 'data_uri' # Saving photos
 require 'json'
 configure { set :server, :puma }
-configure { set :port, 80 }
+#configure { set :port, 80 }
 
 # Open views/index.erb
 get '/' do
