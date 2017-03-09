@@ -1,39 +1,37 @@
-var video, width, height;
-var meeting = false;
-var drawBounds = false;
-var send = false;
-var getContent = false;
-var currImg = undefined;
 var fps = 0.25;
 var interval = 1000 / fps;
 var queryInterval = 1000 / 2;
 
-// Drawing bounding box
+// Actions
+var meeting = false;
+var send = false;
+var getContent = false;
+
+// Drawing bounding box & Video
+var video, vw, vh;
 var dragging = false;
+var currImg = undefined;
 var coordSrc, coordEnd;
 var canvas, ctx;
 var bg;
 
 $(document).ready(function() {
-	width = $("video").width();
-	height = $("video").height();
-	video = document.querySelector('video');
-	canvas = document.querySelector("#meeting-canvas");
-	ctx = canvas.getContext("2d");
+	updateMedia();
+	canvas.width = $(video).width();
+	canvas.height = $(video).height()
 
-	var options = {
-		video: {
-			width: 1200,
-			height: 1200
-		}
-	}
-
-	canvas.width = width;
-	canvas.height = height;
-
-	navigator.mediaDevices.getUserMedia(options).then(handleSuccess).catch(handleError);
+	navigator.mediaDevices.getUserMedia({video: true}).then(handleSuccess).catch(handleError);
 	setEventListeners();
 });
+
+function updateMedia() {
+	video = $("#video-src")[0];
+	vw = $(video).width();
+	vh = $(video).height();
+
+	canvas = $("#meeting-canvas")[0];
+	ctx = canvas.getContext("2d");
+}
 
 function handleSuccess(stream) {
 	window.stream = stream;
@@ -141,7 +139,6 @@ function setEventListeners() {
 		getContent = false;
 		meeting = false;
 		send = false;
-		drawBounds = false;
 	});
 }
 
@@ -168,18 +165,8 @@ function beginQuery() {
 }
 
 function specifyWhiteboardBounds() {
-	var v = $("video");
-	var context = canvas.getContext('2d');
-	ctx = canvas.getContext("2d");
-
-	// console.log(v.width() + " " + v.height());
 	if (window.stream) {
-		canvas.width = v.width();
-		canvas.height = v.height();
-		context.canvas.height = v.height();
-		context.canvas.width = v.width();
-
-		context.drawImage(video, 0, 0, v.width(), v.height());
+		ctx.drawImage(video, 0, 0, vw, vh);
 		bg = new Image;
 		bg.src = canvas.toDataURL()
 
@@ -248,8 +235,8 @@ function getCanvasPos(world, canvas) {
 	canvasPoint.y /= $(canvas).height();
 
 	// Canvas Land
-	canvasPoint.x *= this.width;
-	canvasPoint.y *= this.height;
+	canvasPoint.x *= canvas.width;
+	canvasPoint.y *= canvas.height;
 
 	return canvasPoint;
 }
