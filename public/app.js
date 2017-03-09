@@ -3,7 +3,7 @@ var meeting = false;
 var drawBounds = false;
 var send = false;
 var currImg = undefined;
-var fps = 4;
+var fps = 0.25;
 var interval = 1000 / fps;
 
 // Drawing bounding box
