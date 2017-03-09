@@ -1,8 +1,10 @@
 var video, canvas, width, height, sentCanvas;
 var meeting = false;
+var drawBounds = false;
 var send = false;
 var currImg = undefined;
-var interval = 1000 / 60;
+var fps = 4;
+var interval = 1000 / fps;
 
 $(document).ready(function() {
 	width = $("video").width();
@@ -70,12 +72,12 @@ function beginSnapshot() {
 
 function setEventListeners() {
 	// Start Meeting
-	$("#meeting").on("click", function(e) {
-		meeting = true;
-		streamVideo();
+	$("#draw-bounds").on("click", function(e) {
+		drawBounds = true;
+		streamVideoToCanvas();
 	});
 	// Take Snapshots
-	$("#snapshot").on("click", function(e){
+	$("#start-meeting").on("click", function(e){
 		send = true;
 		// takeSnapshot();
 		beginSnapshot();
@@ -85,10 +87,11 @@ function setEventListeners() {
 	$("#stop-meeting").on("click", function(e) {
 		meeting = false;
 		send = false;
+		drawBounds = false;
 	});
 }
 
-function streamVideo() {
+function streamVideoToCanvas() {
 	var v = $("video");
 	var context = canvas.getContext('2d');
 
@@ -101,9 +104,9 @@ function streamVideo() {
 		context.drawImage(video, 0, 0, v.width(), v.height());
 	}
 
-	if (meeting) {
+	if (drawBounds) {
 		setTimeout(function(e) { 
-			streamVideo(); 
+			streamVideoToCanvas(); 
 		}, interval);
 	}
 }
