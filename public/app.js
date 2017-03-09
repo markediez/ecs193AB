@@ -60,7 +60,7 @@ function takeSnapshot() {
 			},
 			success: function(data, result, xhr) {
 				console.log("HOORAH SENT AND SAVED");
-				
+
 			},
 			error: function(data, result, xhr) {
 				console.log("ERRROR COULD NOT SAVE IMG");
@@ -82,40 +82,45 @@ function beginSnapshot() {
 function setDrawBounds() {
 	$("#draw-bounds").on("click", function(e) {
 		specifyWhiteboardBounds();
-		
-		// Set 
+
+		// Set
 		$(this).off("click");
 		$(this).html("Save bounds");
 		$(this).on("click", function(e) {
-			$(this).off("click");
 			// Send coordinates
-			$.post({
-				url: "/send_box",
-				data: {
-					x: coordSrc.x,
-					y: coordSrc.y,
-					width: coordEnd.x,
-					height: coordEnd.y
-				},
-				success: function(data, result, xhr) {
-					console.log("HOORAH, Bounding Box Saved");
-				},
-				error: function(data, result, xhr) {
-					console.error("Error saving bounding box");
-				}
-			});
-			$("#meeting-canvas").hide();
-			$("video").show();
+			if (coordSrc != undefined && coordEnd != undefined) {
+				$(this).off("click");
+				$.post({
+					url: "/send_box",
+					data: {
+						x: coordSrc.x,
+						y: coordSrc.y,
+						width: coordEnd.x,
+						height: coordEnd.y
+					},
+					success: function(data, result, xhr) {
+						console.log("HOORAH, Bounding Box Saved");
+					},
+					error: function(data, result, xhr) {
+						console.error("Error saving bounding box");
+					}
+				});
+				$("#meeting-canvas").hide();
+				$("video").show();
 
-			// turn off event listeners
-			$(canvas).off("mousedown");
-			$(canvas).off("mouseup");
-			$(canvas).off("mouseover");
-			$(canvas).off("mouseout");
+				// turn off event listeners
+				$(canvas).off("mousedown");
+				$(canvas).off("mouseup");
+				$(canvas).off("mouseover");
+				$(canvas).off("mouseout");
 
 
-			$(this).html("Set bounding box");
-			setDrawBounds();
+				$(this).html("Set bounding box");
+				setDrawBounds();
+			} else {
+				console.error("Attempted to set non-existing bounds");
+			}
+
 		});
 	});
 }
@@ -123,7 +128,7 @@ function setDrawBounds() {
 function setEventListeners() {
 	// Start Meeting
 	setDrawBounds();
-	
+
 	// Take Snapshots
 	$("#start-meeting").on("click", function(e){
 		send = true;
@@ -182,13 +187,13 @@ function specifyWhiteboardBounds() {
 
 		// Draw bounding box if it exists
 		if (coordSrc != undefined || coordEnd != undefined) {
-			updateCanvas(); 
+			updateCanvas();
 		}
 
 		// Events to draw the region
 		$(canvas).mousedown(function(e) {
 			coordSrc = getCanvasPos({ x: e.pageX, y: e.pageY }, this);
-			dragging = true;			
+			dragging = true;
 		});
 
 		$(canvas).mouseup(function(e) {
@@ -212,8 +217,9 @@ function specifyWhiteboardBounds() {
 				if (e.pageY > this.height + this.offsetTop) {
 					coordEnd = getCanvasPos({x: e.pageX, y: this.height}, this);
 				}
+				
+				updateCanvas();
 			}
-			updateCanvas();
 		});
 	} else {
 		console.error("Stream is null");
@@ -228,7 +234,7 @@ function updateCanvas() {
 	ctx.strokeRect(coordSrc.x, coordSrc.y, coordEnd.x - coordSrc.x, coordEnd.y - coordSrc.y);
 }
 
-// Change of coordinate system from World -> NDC -> Canvas 
+// Change of coordinate system from World -> NDC -> Canvas
 // Returns the coordinates for the canvas
 function getCanvasPos(world, canvas) {
 	var canvasPoint = {};
