@@ -107,6 +107,6 @@ function streamVideoToCanvas() {
 	if (drawBounds) {
 		setTimeout(function(e) { 
 			streamVideoToCanvas(); 
-		}, interval);
+		}, 1000/60);
 	}
 }
