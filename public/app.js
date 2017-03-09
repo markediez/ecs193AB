@@ -80,8 +80,6 @@ function beginSnapshot() {
 
 function setDrawBounds() {
 	$("#draw-bounds").on("click", function(e) {
-		// $("video").hide();
-		// $("#meeting_canvas").show();
 		specifyWhiteboardBounds();
 		
 		// Set 
@@ -90,23 +88,23 @@ function setDrawBounds() {
 		$(this).on("click", function(e) {
 			$(this).off("click");
 			// Send coordinates
-			// $.post({
-			// 	url: "/sendBox",
-			// 	data: {
-			// 		x: coordSrc.x,
-			//		y: coordSrc.y,
-			//		width: coordEnd.x,
-			//		height: coordEnd.y
-			// 	},
-			// 	success: function(data, result, xhr) {
-			// 		console.log("HOORAH, Bounding Box Saved");
-			// 	},
-			// 	error: function(data, result, xhr) {
-			// 		console.error("Error saving bounding box");
-			// 	}
-			// });
-			// $("#meeting_canvas").hide();
-			// $("video").show();
+			$.post({
+				url: "/send_box",
+				data: {
+					x: coordSrc.x,
+					y: coordSrc.y,
+					width: coordEnd.x,
+					height: coordEnd.y
+				},
+				success: function(data, result, xhr) {
+					console.log("HOORAH, Bounding Box Saved");
+				},
+				error: function(data, result, xhr) {
+					console.error("Error saving bounding box");
+				}
+			});
+			$("#meeting_canvas").hide();
+			$("video").show();
 
 			// turn off event listeners
 			$(canvas).off("mousedown");
