@@ -18,7 +18,7 @@ $(document).ready(function() {
 	width = $("video").width();
 	height = $("video").height();
 	video = document.querySelector('video');
-	canvas = document.querySelector("#meeting_canvas");
+	canvas = document.querySelector("#meeting-canvas");
 	ctx = canvas.getContext("2d");
 
 	var options = {
@@ -50,7 +50,7 @@ function takeSnapshot() {
 		ctx.drawImage(video, 0, 0, $(video).width(), $(video).height());
 		var data = canvas.toDataURL();
 		var fn = "IMG_" + Date.now() + ".png";
-		$("#sent_image").attr("src", data);
+		$("#sent-image").attr("src", data);
 		// UPLOAD
 		$.post({
 			url: "/remove",
@@ -104,7 +104,7 @@ function setDrawBounds() {
 					console.error("Error saving bounding box");
 				}
 			});
-			$("#meeting_canvas").hide();
+			$("#meeting-canvas").hide();
 			$("video").show();
 
 			// turn off event listeners
