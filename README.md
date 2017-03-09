@@ -13,7 +13,7 @@
 ## CSS / SASS
 	1. Filenames should be `snake_case`
 	2. `$variables` should use lowercase and dashes.
-	
+
 ## JavaScript
 	1. Filenames should be `snake_case`
 	2. Variable names should be in `camelCase`
@@ -21,3 +21,4 @@
 ## Ruby
 	1. Filenames should be in `snake_case`
 	2. Variable and function names should be in `snake_case`
+	3. `SCREAMING_SNAKE_CASE` for global variables

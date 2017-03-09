@@ -1,8 +1,21 @@
 require 'sinatra'  # Managing routes
 require 'data_uri' # Saving photos
 require 'json'
+require 'yaml'	# For environment and secret data
+
+# Load config files
+settings_path = "config/config.yml"
+if File.file?(settings_path)
+	SETTINGS = YAML.load_file(settings_path)
+else
+	puts "Please configure config/config.yml file using config/config.example.yml"
+	exit
+end
+
+# Set server
+port = SETTINGS["ENV"] == "development" ? 4567 : 80
 configure { set :server, :puma }
-configure { set :port, 80 }
+configure { set :port, port }
 
 # Open views/index.erb
 get '/' do
@@ -36,7 +49,7 @@ end
 post '/send_box' do
 	# TODO: Do the ruby way
 	system("echo #{params[:x]}, #{params[:y]}, #{params[:width]}, #{params[:height]} >> public/uploads/coordinates.txt")
-	
+
 
 	if File.exist?("public/uploads/coordinates.txt")
 		status 200

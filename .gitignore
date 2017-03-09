@@ -3,3 +3,6 @@
 
 # data output
 public/uploads/*.png
+
+# config files
+config/config.yml
