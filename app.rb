@@ -21,7 +21,16 @@ end
 
 # Query for latest image
 get '/get_content' do
-	# TODO: Return content
+	# Run C++ or something to repair
+	path = "public/uploads/test.png"
+
+	# Encode repaired image
+	returnData = 'data:image/png;base64,'
+	File.open(path, 'rb'){ |file| returnData += Base64.encode64(file.read) }
+
+	# Return most updated image
+	content_type :json
+	{:img => returnData}.to_json
 end
 
 post '/send_box' do
@@ -53,14 +62,12 @@ post '/remove' do
 	uri = URI::Data.new(data)
 	File.write("public/uploads/#{filename}", uri.data)
 
-	# Run C++ or something to repair
-	path = "public/uploads/test.png"
-
-	# Encode repaired image
-	returnData = 'data:image/png;base64,'
-	File.open(path, 'rb'){ |file| returnData += Base64.encode64(file.read) }
-
-	# Return most updated image
-	content_type :json
-	{:img => returnData}.to_json
+	if File.exists?("public/uploads/#{filename}")
+		status 200
+		body ''
+	else
+		# Again, probably wrong
+		status 500
+		body 'Could not save image...'
+	end
 end

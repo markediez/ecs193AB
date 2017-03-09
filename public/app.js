@@ -2,9 +2,11 @@ var video, width, height;
 var meeting = false;
 var drawBounds = false;
 var send = false;
+var getContent = false;
 var currImg = undefined;
 var fps = 0.25;
 var interval = 1000 / fps;
+var queryInterval = 1000 / 2;
 
 // Drawing bounding box
 var dragging = false;
@@ -44,6 +46,8 @@ function handleError(error) {
 
 function takeSnapshot() {
 	if (window.stream) {
+		ctx = canvas.getContext("2d");
+		ctx.drawImage(video, 0, 0, $(video).width(), $(video).height());
 		var data = canvas.toDataURL();
 		var fn = "IMG_" + Date.now() + ".png";
 		$("#sent_image").attr("src", data);
@@ -55,14 +59,11 @@ function takeSnapshot() {
 				filename: fn
 			},
 			success: function(data, result, xhr) {
-				console.log("HOORAH");
-				if (currImg == undefined || currImg != data.img) {
-					currImg = data.img
-					$("#server-image").attr("src", currImg);
-				}
+				console.log("HOORAH SENT AND SAVED");
+				
 			},
 			error: function(data, result, xhr) {
-				console.log("ERRROR");
+				console.log("ERRROR COULD NOT SAVE IMG");
 			}
 		});
 	}
@@ -126,16 +127,41 @@ function setEventListeners() {
 	// Take Snapshots
 	$("#start-meeting").on("click", function(e){
 		send = true;
+		getContent = true;
 		// takeSnapshot();
 		beginSnapshot();
+		beginQuery();
 	});
 
 	// Stop Meeting
 	$("#stop-meeting").on("click", function(e) {
+		getContent = false;
 		meeting = false;
 		send = false;
 		drawBounds = false;
 	});
+}
+
+function beginQuery() {
+	$.get({
+		url: "/get_content",
+		success: function(data, result, xhr) {
+			console.log("Should get something...");
+			if (currImg == undefined || currImg != data.img) {
+				currImg = data.img
+				$("#server-image").attr("src", currImg);
+			}
+		},
+		error: function(data, result, xhr) {
+			console.error("Could not query");
+		}
+	});
+
+	if (getContent) {
+		setTimeout(function() {
+			beginQuery();
+		}, queryInterval);
+	}
 }
 
 function specifyWhiteboardBounds() {
