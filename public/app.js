@@ -105,8 +105,6 @@ function setDrawBounds() {
 						console.error("Error saving bounding box");
 					}
 				});
-				$("#meeting-canvas").hide();
-				$("video").show();
 
 				// turn off event listeners
 				$(canvas).off("mousedown");
@@ -217,7 +215,7 @@ function specifyWhiteboardBounds() {
 				if (e.pageY > this.height + this.offsetTop) {
 					coordEnd = getCanvasPos({x: e.pageX, y: this.height}, this);
 				}
-				
+
 				updateCanvas();
 			}
 		});
