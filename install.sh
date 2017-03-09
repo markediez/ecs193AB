@@ -20,3 +20,4 @@ echo "Installing other gems..."
 sudo gem install data_uri
 sudo gem install json
 sudo gem install sass
+sudo gem install yaml
