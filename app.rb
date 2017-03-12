@@ -3,6 +3,7 @@ require 'sinatra-websocket' # For web sockets
 require 'data_uri' # Saving photos
 require 'json'
 require 'yaml'	# For environment and secret data
+require 'thin'
 
 # Load config files
 settings_path = "config/config.yml"

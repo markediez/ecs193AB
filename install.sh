@@ -15,7 +15,7 @@ sudo gem install sinatra
 sudo gem install sinatra-websocket
 
 echo "Installing Puma..."
-sudo gem install puma
+sudo gem install thin
 
 echo "Installing other gems..."
 sudo gem install data_uri
