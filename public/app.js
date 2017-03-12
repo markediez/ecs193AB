@@ -9,9 +9,7 @@ var mediaOptions = {
 }
 
 // Actions
-var meeting = false;
-var send = false;
-var getContent = false;
+var webSocket;
 
 // Drawing bounding box & Video
 var video, vw, vh;
@@ -20,7 +18,6 @@ var currImg = undefined;
 var coordSrc, coordEnd;
 var canvas, ctx;
 var bg;
-var ws;
 
 $(document).ready(function() {
 	updateMedia();
@@ -61,12 +58,12 @@ function takeSnapshot() {
 			filename: fileName,
 			img: imgData
 		};
-		ws.send(JSON.stringify(data));
+		webSocket.send(JSON.stringify(data));
 	}
 }
 
 function beginSnapshot() {
-	if (send) {
+	if (webSocket.readyState == WebSocket.OPEN) {
 		setTimeout(function() {
 			takeSnapshot();
 			beginSnapshot();
@@ -120,20 +117,21 @@ function setDrawBounds() {
 }
 
 function connectWebsocket() {
-	ws = new WebSocket('ws://' + window.location.host + "/meeting");
-  ws.onopen = function()  {
+	webSocket = new WebSocket('ws://' + window.location.host + "/meeting");
+  webSocket.onopen = function()  {
 		$("#websocket .status").html("Status: Open");
+		beginSnapshot();
 	};
 
-	ws.onerror = function() {
+	webSocket.onerror = function() {
 		$("#websocket .status").html("Status: Error");
 	}
 
-  ws.onclose = function()  {
+  webSocket.onclose = function()  {
 		$("#websocket .status").html("Status: Closed");
 	}
 
-	ws.onmessage = function(m) {
+	webSocket.onmessage = function(m) {
 		if (currImg == undefined || currImg != m.data) {
 			currImg = m.data;
 			$("#server-image").attr("src", m.data);
@@ -147,15 +145,12 @@ function setEventListeners() {
 
 	// Take Snapshots
 	$("#start-meeting").on("click", function(e){
-		send = true;
 		connectWebsocket();
-		beginSnapshot();
 	});
 
 	// Stop Meeting
 	$("#stop-meeting").on("click", function(e) {
-		send = false;
-		ws.close();
+		webSocket.close();
 	});
 }
 
