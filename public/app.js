@@ -1,6 +1,12 @@
-var fps = 0.25;
+var fps = 2;
 var interval = 1000 / fps;
-var queryInterval = 1000 / 2;
+var mediaOptions = {
+	audio: false,
+	video: {
+		width: 1280,
+		height: 720
+	}
+}
 
 // Actions
 var meeting = false;
@@ -21,7 +27,7 @@ $(document).ready(function() {
 	canvas.width = $(video).width();
 	canvas.height = $(video).height()
 
-	navigator.mediaDevices.getUserMedia({video: true}).then(handleSuccess).catch(handleError);
+	navigator.mediaDevices.getUserMedia(mediaOptions).then(handleSuccess).catch(handleError);
 	setEventListeners();
 });
 
@@ -40,31 +46,22 @@ function handleSuccess(stream) {
 }
 
 function handleError(error) {
-	console.log('navigator.getUserMedia error: ', error);
+	console.error('navigator.getUserMedia error: ', error);
 }
 
 function takeSnapshot() {
 	if (window.stream) {
 		ctx = canvas.getContext("2d");
 		ctx.drawImage(video, 0, 0, $(video).width(), $(video).height());
-		var data = canvas.toDataURL();
-		var fn = "IMG_" + Date.now() + ".png";
-		$("#sent-image").attr("src", data);
-		// UPLOAD
-		$.post({
-			url: "/remove",
-			data: {
-				img: data,
-				filename: fn
-			},
-			success: function(data, result, xhr) {
-				console.log("HOORAH SENT AND SAVED");
+		var imgData = canvas.toDataURL();
+		var fileName = "IMG_" + Date.now() + ".png";
+		$("#sent-image").attr("src", imgData);
 
-			},
-			error: function(data, result, xhr) {
-				console.log("ERRROR COULD NOT SAVE IMG");
-			}
-		});
+		var data = {
+			filename: fileName,
+			img: imgData
+		};
+		ws.send(JSON.stringify(data));
 	}
 }
 
@@ -73,7 +70,7 @@ function beginSnapshot() {
 		setTimeout(function() {
 			takeSnapshot();
 			beginSnapshot();
-		}, 1000);
+		}, interval);
 	}
 }
 
@@ -135,17 +132,13 @@ function connectWebsocket() {
   ws.onclose = function()  {
 		$("#websocket .status").html("Status: Closed");
 	}
-	// ws.onmessage = function(m) { show('websocket message: ' +  m.data); };
 
-  // var sender = function(f){
-  //   var input     = document.getElementById('input');
-  //   input.onclick = function(){ input.value = "" };
-  //   f.onsubmit    = function(){
-  //     ws.send(input.value);
-  //     input.value = "send a message";
-  //     return false;
-  //   }
-  // }(document.getElementById('form'));
+	ws.onmessage = function(m) {
+		if (currImg == undefined || currImg != m.data) {
+			currImg = m.data;
+			$("#server-image").attr("src", m.data);
+		}
+	};
 }
 
 function setEventListeners() {
@@ -155,42 +148,15 @@ function setEventListeners() {
 	// Take Snapshots
 	$("#start-meeting").on("click", function(e){
 		send = true;
-		getContent = true;
-		// takeSnapshot();
-		beginSnapshot();
-		beginQuery();
 		connectWebsocket();
+		beginSnapshot();
 	});
 
 	// Stop Meeting
 	$("#stop-meeting").on("click", function(e) {
-		getContent = false;
-		meeting = false;
 		send = false;
 		ws.close();
 	});
-}
-
-function beginQuery() {
-	$.get({
-		url: "/get_content",
-		success: function(data, result, xhr) {
-			console.log("Should get something...");
-			if (currImg == undefined || currImg != data.img) {
-				currImg = data.img
-				$("#server-image").attr("src", currImg);
-			}
-		},
-		error: function(data, result, xhr) {
-			console.error("Could not query");
-		}
-	});
-
-	if (getContent) {
-		setTimeout(function() {
-			beginQuery();
-		}, queryInterval);
-	}
 }
 
 function specifyWhiteboardBounds() {
