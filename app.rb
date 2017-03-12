@@ -1,4 +1,5 @@
 require 'sinatra'  # Managing routes
+require 'sinatra-websocket' # For web sockets
 require 'data_uri' # Saving photos
 require 'json'
 require 'yaml'	# For environment and secret data
@@ -14,12 +15,32 @@ end
 
 # Set server
 port = SETTINGS["ENV"] == "development" ? 4567 : 80
-configure { set :server, :puma }
-configure { set :port, port }
+set :server, :thin
+set :port, port
+set :sockets, []
 
 # Open views/index.erb
 get '/' do
 	erb :index
+end
+
+get '/meeting' do
+	return "" unless request.websocket?
+
+	# https://github.com/simulacre/sinatra-websocket
+	request.websocket do |ws|
+    ws.onopen do
+      ws.send("Meeting Connected!")
+      settings.sockets << ws
+    end
+    # ws.onmessage do |msg|
+    #   EM.next_tick { settings.sockets.each{|s| s.send(msg) } }
+    # end
+    # ws.onclose do
+    #   warn("websocket closed")
+    #   settings.sockets.delete(ws)
+    # end
+	end
 end
 
 # Open views/stylesheet.scss

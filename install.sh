@@ -12,6 +12,7 @@ sudo apt-get install make
 
 echo "Installing Sinatra..."
 sudo gem install sinatra
+sudo gem install sinatra-websocket
 
 echo "Installing Puma..."
 sudo gem install puma

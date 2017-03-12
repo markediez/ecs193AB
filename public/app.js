@@ -14,6 +14,7 @@ var currImg = undefined;
 var coordSrc, coordEnd;
 var canvas, ctx;
 var bg;
+var ws;
 
 $(document).ready(function() {
 	updateMedia();
@@ -121,6 +122,32 @@ function setDrawBounds() {
 	});
 }
 
+function connectWebsocket() {
+	ws = new WebSocket('ws://' + window.location.host + "/meeting");
+  ws.onopen = function()  {
+		$("#websocket .status").html("Status: Open");
+	};
+
+	ws.onerror = function() {
+		$("#websocket .status").html("Status: Error");
+	}
+
+  ws.onclose = function()  {
+		$("#websocket .status").html("Status: Closed");
+	}
+	// ws.onmessage = function(m) { show('websocket message: ' +  m.data); };
+
+  // var sender = function(f){
+  //   var input     = document.getElementById('input');
+  //   input.onclick = function(){ input.value = "" };
+  //   f.onsubmit    = function(){
+  //     ws.send(input.value);
+  //     input.value = "send a message";
+  //     return false;
+  //   }
+  // }(document.getElementById('form'));
+}
+
 function setEventListeners() {
 	// Start Meeting
 	setDrawBounds();
@@ -132,6 +159,7 @@ function setEventListeners() {
 		// takeSnapshot();
 		beginSnapshot();
 		beginQuery();
+		connectWebsocket();
 	});
 
 	// Stop Meeting
@@ -139,6 +167,7 @@ function setEventListeners() {
 		getContent = false;
 		meeting = false;
 		send = false;
+		ws.close();
 	});
 }
 
