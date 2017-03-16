@@ -52,7 +52,7 @@ get '/meeting' do
 
 			# Encode repaired image
 			returnData = 'data:image/png;base64,'
-			File.open(path, 'rb'){ |file| returnData += Base64.encode64(file.read) }
+			File.open(path, 'rb'){ |file| returnData += Base64.encode64(file.read) } if File.exists?(path)
       EM.next_tick { settings.sockets.each{ |s| s.send(returnData) } }
     end
     ws.onclose do
@@ -74,10 +74,14 @@ end
 
 post '/send_box' do
 	# TODO: Do the ruby way
-	system("echo #{params[:x]}, #{params[:y]}, #{params[:width]}, #{params[:height]} > public/uploads/coordinates.txt")
+	dirname = "public/uploads/box"
+	unless File.directory?(dirname)
+	    system("mkdir #{dirname}")
+    end
+	system("echo #{params[:x]}, #{params[:y]}, #{params[:width]}, #{params[:height]} > #{dirname}/coordinates.txt")
 
-
-	if File.exist?("public/uploads/coordinates.txt")
+	
+	if File.exist?("#{dirname}/coordinates.txt")
 		status 200
 		body ''
 	else
