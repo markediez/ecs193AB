@@ -74,7 +74,7 @@ end
 
 post '/send_box' do
 	# TODO: Do the ruby way
-	dirname = "public/uploads/box"
+	dirname = "public/box"
 	unless File.directory?(dirname)
 	    system("mkdir #{dirname}")
     end
