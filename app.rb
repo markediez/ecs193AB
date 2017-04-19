@@ -25,6 +25,10 @@ get '/' do
 	erb :index
 end
 
+get '/dev' do
+	erb :dev
+end
+
 get '/meeting' do
 	return "" unless request.websocket?
 
@@ -65,6 +69,10 @@ end
 # Open views/stylesheet.scss
 get '/stylesheet.css' do
 	scss :stylesheet
+end
+
+get '/user.css' do
+	scss :user
 end
 
 # Open public/app.js
