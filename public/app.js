@@ -137,8 +137,10 @@ function connectWebsocket() {
 
 	webSocket.onmessage = function(m) {
 		if (currImg == undefined || currImg != m.data) {
-			currImg = m.data;
-			$("#server-image").attr("src", m.data);
+			if (m.data != "false") {
+				currImg = m.data;
+				$("#server-image").attr("src", m.data);
+			}
 		}
 	};
 }

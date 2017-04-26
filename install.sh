@@ -18,6 +18,7 @@ echo "Installing Puma..."
 sudo gem install thin
 
 echo "Installing other gems..."
+sudo gem install digest
 sudo gem install data_uri
 sudo gem install json
 sudo gem install sass

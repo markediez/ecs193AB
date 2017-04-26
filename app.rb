@@ -4,6 +4,7 @@ require 'data_uri' # Saving photos
 require 'json'
 require 'yaml'	# For environment and secret data
 require 'thin'
+require 'digest'
 
 # Load config files
 settings_path = "config/config.yml"
@@ -19,6 +20,8 @@ port = SETTINGS["ENV"] == "development" ? 4567 : 80
 set :server, :thin
 set :port, port
 set :sockets, []
+
+@img_cache = nil
 
 # Open views/index.erb
 get '/' do
@@ -51,14 +54,30 @@ get '/meeting' do
 			uri = URI::Data.new(data)
 			File.write("public/uploads/#{filename}", uri.data)
 
-			# Run C++ or something to repair
+      # Path to return
 			path = "public/uploads/test.png"
 
 			# Encode repaired image
-			returnData = 'data:image/png;base64,'
-			File.open(path, 'rb'){ |file| returnData += Base64.encode64(file.read) } if File.exists?(path)
+			returnData = "false"
+			File.open(path, 'rb') do |file|
+        returnData = 'data:image/png;base64,'
+        if File.exists?(path)
+          img = Base64.encode64(file.read)
+          hex = Digest::MD5.hexdigest(img)
+          if @img_cache == nil || (hex != @img_cache)
+            @img_cache = hex
+            returnData += img
+          else
+            returnData = "false"
+          end
+        else
+          returnData = "false"
+        end
+      end
+
       EM.next_tick { settings.sockets.each{ |s| s.send(returnData) } }
     end
+
     ws.onclose do
       warn("websocket closed")
       settings.sockets.delete(ws)
@@ -88,7 +107,7 @@ post '/send_box' do
     end
 	system("echo #{params[:x]}, #{params[:y]}, #{params[:width]}, #{params[:height]} > #{dirname}/coordinates.txt")
 
-	
+
 	if File.exist?("#{dirname}/coordinates.txt")
 		status 200
 		body ''
