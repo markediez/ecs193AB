@@ -51,7 +51,11 @@ function takeSnapshot() {
 		ctx = canvas.getContext("2d");
 		ctx.drawImage(video, 0, 0, $(video).width(), $(video).height());
 		var imgData = canvas.toDataURL();
-		var fileName = "IMG_" + Date.now() + ".png";
+		// var suffix = Date.now();
+		var suffix = new Date(Date.now());
+		suffix = suffix.toLocaleTimeString().slice(0,-3);
+
+		var fileName = "IMG_" + suffix + ".png";
 		$("#sent-image").attr("src", imgData);
 
 		var data = {
