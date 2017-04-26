@@ -1,2 +1,4 @@
 # Specify environment: "development" / "production"
 ENV: "development"
+# Specify "hms" for hour minute second, else use "ms" for production
+FILE_FORMAT: "hms"  
