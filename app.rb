@@ -58,26 +58,24 @@ get '/meeting' do
       path = "public/uploads/test.png"
 
       # Encode repaired image
-      returnData = "false"
-      if File.exists?
+      returnData = {:status => false}
+      if File.exists?(path)
         File.open(path, 'rb') do |file|
-          returnData = 'data:image/png;base64,'
+          d = 'data:image/png;base64,'
           if File.exists?(path)
             img = Base64.encode64(file.read)
             hex = Digest::MD5.hexdigest(img)
             if @img_cache == nil || (hex != @img_cache)
               @img_cache = hex
-              returnData += img
-            else
-              returnData = "false"
+              d += img
+              returnData[:data] = d
+              returnData[:status] = true
             end
-          else
-            returnData = "false"
           end
         end
       end
 
-      EM.next_tick { settings.sockets.each{ |s| s.send(returnData) } }
+      EM.next_tick { settings.sockets.each{ |s| s.send(JSON.generate(returnData)) } }
     end
 
     ws.onclose do

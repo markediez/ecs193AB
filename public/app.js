@@ -136,11 +136,10 @@ function connectWebsocket() {
 	}
 
 	webSocket.onmessage = function(m) {
-		if (currImg == undefined || currImg != m.data) {
-			if (m.data != "false") {
-				currImg = m.data;
-				$("#server-image").attr("src", m.data);
-			}
+		m = JSON.parse(m.data);
+		if (m.status == true) {
+			currImg = m.data;
+			$("#server-image").attr("src", m.data);
 		}
 	};
 }
